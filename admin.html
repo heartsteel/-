@@ -1,0 +1,124 @@
+<!-- templates/admin.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理员面板</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        h1, h2 {
+            color: #333;
+            text-align: center;
+        }
+
+        p {
+            color: #555;
+            text-align: center;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 20px;
+            text-align: center;
+        }
+
+        li {
+            background-color: #fff;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        a {
+            color: #007bff;
+            text-decoration: none;
+            margin-left: 10px;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            margin: 20px;
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0;
+            color: #555;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0 15px 0;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>管理员面板</h1>
+    <p>欢迎，{{ current_user.username }}！</p>
+
+    <h2>用户管理</h2>
+    <ul>
+        {% for user in users %}
+            <li>
+                {{ user.username }}
+                <a href="{{ url_for('admin_edit_user', user_id=user.id) }}">编辑</a>
+                <a href="{{ url_for('admin_delete_user', user_id=user.id) }}">删除</a>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <h2>添加新用户</h2>
+    <form action="{{ url_for('admin_add_user') }}" method="post">
+        <label for="new_username">用户名：</label>
+        <input type="text" name="new_username" required>
+        <br>
+        <label for="new_password">密码：</label>
+        <input type="password" name="new_password" required>
+        <br>
+        <button type="submit">添加用户</button>
+    </form>
+
+    <p><a href="{{ url_for('logout') }}">注销</a></p>
+</body>
+</html>

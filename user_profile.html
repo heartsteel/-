@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        h1, h2 {
+            color: #333;
+            text-align: center;
+        }
+
+        img {
+            border-radius: 50%;
+            margin-bottom: 20px;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 20px;
+            text-align: center;
+        }
+
+        li {
+            background-color: #fff;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        a {
+            color: #007bff;
+            text-decoration: none;
+            margin-left: 10px;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>User Profile</h1>
+
+    <!-- 修改头像显示，添加上传和重置按钮 -->
+    <form action="/change_avatar" method="post" enctype="multipart/form-data">
+        <img src="{{ url_for('static', filename='avatars/' + user.avatar) }}" alt="用户头像" width="100" height="100">
+        <br>
+        <label for="new_avatar">Choose a new avatar:</label>
+        <input type="file" name="new_avatar" accept="image/*">
+        <br>
+        <button type="submit">Upload New Avatar</button>
+        <br>
+        <button type="submit" formaction="/reset_avatar">Reset to Default Avatar</button>
+    </form>
+
+    <h2>{{ user.username }}</h2>
+    <p>Total Files Uploaded: {{ total_files }}</p>
+
+    <h2>Uploaded Files:</h2>
+    <ul>
+        {% for file in user_files %}
+            <li>
+                {{ file }}
+                {% if file.lower().endswith(( 'txt')) %}
+                    <a href="{{ url_for('preview_file', filename=file) }}" target="_blank">Preview</a>
+                {% else %}
+                    <span style="color: #ff0000;">Not supported for preview</span>
+                {% endif %}
+                <a href="/download/{{ file }}" download>Download</a>
+                <a href="/delete/{{ file }}">Delete</a>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文件上传与下载</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        h1, h2 {
+            color: #333;
+            text-align: center;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            margin: 20px;
+            text-align: center;
+        }
+
+        input {
+            display: block;
+            margin: 10px auto;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 20px;
+            text-align: center;
+        }
+
+        li {
+            background-color: #fff;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        a {
+            color: #007bff;
+            text-decoration: none;
+            margin-left: 10px;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>文件上传与下载</h1>
+
+    <!-- 添加用户信息显示部分 -->
+    <div style="position: absolute; top: 10px; right: 10px;">
+        {% if current_user.is_authenticated %}
+            <p>欢迎，{{ current_user.username }}！</p>
+            <a href="{{ url_for('user_profile') }}">
+                <img src="{{ url_for('static', filename='avatars/' + current_user.avatar) }}" alt="用户头像" width="30" height="30" style="border-radius: 50%;">
+            </a>
+            <a href="{{ url_for('logout') }}">注销</a>
+        {% else %}
+            <a href="{{ url_for('login') }}">登录</a>
+        {% endif %}
+    </div>
+
+    <!-- 添加文件上传表单 -->
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="file">
+        <button type="submit">上传文件</button>
+    </form>
+
+    <h2>已上传的文件：</h2>
+    <ul>
+        {% for file in files %}
+            <li>
+                {{ file }}
+                {% if file.lower().endswith(( 'txt')) %}
+                    <a href="{{ url_for('preview_file', filename=file) }}" target="_blank">预览</a>
+                {% else %}
+                    <span style="color: #ff0000;">不支持预览</span>
+                {% endif %}
+                <a href="/download/{{ file }}" download>下载</a>
+                <a href="/delete/{{ file }}">删除</a>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
